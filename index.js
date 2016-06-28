@@ -28,18 +28,11 @@ app.get('/', function (req, res) {
   res.send('OK');
 });
 
-function handleError(err, res) {
-  res.status(502).send('News feed is unavailable: ' + err);
-}
-
-function mapNewsItem(item) {
-  return {
-    title: item.title,
-    text: item.description,
-    date: item.date,
-    link: item.link
-  };
-}
+app.get('/feed2', function (req, res) {
+  request(process.env.WORDPRESS_FEED_URL, function (err, response, body) {
+    res.send(body);
+  });
+});
 
 /**
  * Retrieves news feed from wordpress blog.
@@ -53,7 +46,7 @@ app.get('/feed', function (req, res) {
   req.on('error', function (err) {
     handleError(err, res);
   });
-  
+
   req.on('response', function (res) {
     var stream = this;
     if (res.statusCode != 200) {
@@ -81,7 +74,20 @@ app.get('/feed', function (req, res) {
     res.send(response);
   });
 });
- 
+
+function handleError(err, res) {
+  res.status(502).send('News feed is unavailable: ' + err);
+}
+
+function mapNewsItem(item) {
+  return {
+    title: item.title,
+    text: item.description,
+    date: item.date,
+    link: item.link
+  };
+} 
+
 app.listen(port, function () {
   debug('Listening on port: ' + port);
 });
