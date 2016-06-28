@@ -28,14 +28,8 @@ app.get('/', function (req, res) {
   res.send('OK');
 });
 
-app.get('/feed2', function (req, res) {
-  request(process.env.WORDPRESS_FEED_URL, function (err, response, body) {
-    res.send(body);
-  });
-});
-
 /**
- * Retrieves news feed from wordpress blog.
+ * Retrieves news feed from a wordpress blog.
  */
 app.get('/feed', function (req, res) {
   var items = [];
